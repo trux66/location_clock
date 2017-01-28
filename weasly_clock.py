@@ -37,7 +37,8 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
   topic = msg.topic
   data = json.loads(str(msg.payload))
-  if data['_type'] not in ('card', 'waypoints', 'configuration'):  # _type doesn't contain timestamp
+  if data['_type'] not in ('card', 'waypoints', 'waypoint', 'encrypted',
+    'configuration'):  # _types don't contain timestamp
     dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
   try: # see if we can do something based on the _type of message received
     for case in switch(data['_type']):
@@ -47,9 +48,6 @@ def on_message(client, userdata, msg):
       if case('location'):
         print "TID = {0} was at {1}, {2} on {3}".format(
           data['tid'], data['lat'], data['lon'], dt)
-        break
-      if case('waypoint'):
-        print "TID = {0} reached waypoint {1} on {2}".format(data['tid'], data['desc'], dt)
         break
       if case('transition'):
         for case in switch(data['event']):
@@ -62,7 +60,8 @@ def on_message(client, userdata, msg):
           if case(): # default
             print "Not sure what happened in this transition"
             break
-      if case('beacon', 'cmd', 'steps', 'configuration', 'card', 'waypoints', 'encrypted'):
+      if case('beacon', 'cmd', 'steps', 'configuration', 'card',
+        'waypoint', 'waypoints', 'encrypted'):
         print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
         break
       if case(): # default
