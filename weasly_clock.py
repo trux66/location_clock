@@ -39,9 +39,7 @@ def on_message(client, userdata, msg):
   data = json.loads(str(msg.payload))
   if data['_type']!='card':  # card _type doesn't contain timestamp
     dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
-
-  try:
-    # print "type is {0}".format(data['_type'])
+  try: # see if we can do something based on the _type of message received
     for case in switch(data['_type']):
       if case('lwt'):
         print "Topic {0} is in mortal peril!".format(topic)
@@ -69,7 +67,6 @@ def on_message(client, userdata, msg):
         break
       if case(): # default
         print "I don't know what the payload is!"
-
   except:
     print "Cannot decode data on topic {0}".format(topic)
     print("Received message '" + str(msg.payload) + "' on topic '" 
