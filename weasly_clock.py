@@ -37,7 +37,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
   topic = msg.topic
   data = json.loads(str(msg.payload))
-  if data['_type']!='card':  # card _type doesn't contain timestamp
+  if data['_type'] not in ('card', 'waypoints', 'configuration'):  # _type doesn't contain timestamp
     dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
 
   try:
