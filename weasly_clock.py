@@ -60,6 +60,7 @@ def on_message(client, userdata, msg):
           if case(): # default
             print "Not sure what happened in this transition"
             break
+        break
       if case('beacon', 'cmd', 'steps', 'configuration', 'card',
         'waypoint', 'waypoints', 'encrypted'):
         print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
