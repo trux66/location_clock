@@ -41,7 +41,7 @@ def on_message(client, userdata, msg):
   if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card',
     'waypoint', 'waypoints', 'encrypted'):
     print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
-    break
+    return
 
   try: # see if we can do something based on the _type of message received
     dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
