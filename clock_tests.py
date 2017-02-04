@@ -75,11 +75,11 @@ def on_message(client, userdata, msg):
 
 client = mqtt.Client()
 client.username_pw_set("Node-RED","hass3665")
-#client.tls_set("/etc/ssl/certs/ca-certificates.crt")
+client.tls_set("/etc/ssl/certs/ca-certificates.crt")
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("m13.cloudmqtt.com", 18497, 60)
+client.connect("m13.cloudmqtt.com", 28497, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
