@@ -37,10 +37,14 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
   topic = msg.topic
   data = json.loads(str(msg.payload))
-  if data['_type'] not in ('card', 'waypoints', 'waypoint', 'encrypted',
-    'configuration'):  # _types don't contain timestamp
-    dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
+
+  if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card',
+    'waypoint', 'waypoints', 'encrypted'):
+    print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
+    break
+
   try: # see if we can do something based on the _type of message received
+    dt = datetime.datetime.fromtimestamp(data['tst']).strftime('%d-%b-%Y %I:%M:%S %p %Z')
     for case in switch(data['_type']):
       if case('lwt'):
         print "Topic {0} is in mortal peril!".format(topic)
@@ -61,10 +65,6 @@ def on_message(client, userdata, msg):
             print "Not sure what happened in this transition"
             break
         break
-      if case('beacon', 'cmd', 'steps', 'configuration', 'card',
-        'waypoint', 'waypoints', 'encrypted'):
-        print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
-        break
       if case(): # default
         print "I don't know what the payload is!"
   except:
@@ -74,12 +74,12 @@ def on_message(client, userdata, msg):
 
 
 client = mqtt.Client()
-client.username_pw_set("Node-RED","hass3665")
-#client.tls_set("/etc/ssl/certs/ca-certificates.crt")
+client.username_pw_set("hass","hass3665")
+client.tls_set("/etc/ssl/certs/ca-certificates.crt")
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("m13.cloudmqtt.com", 18497, 60)
+client.connect("m13.cloudmqtt.com", 28497, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
