@@ -1,6 +1,8 @@
 import paho.mqtt.client as mqtt
 import json
 import datetime
+import logging, sys, getopt
+
 
 # provide switch/case type construct for python
 class switch(object):
@@ -24,6 +26,21 @@ class switch(object):
       return False
 
 
+def transition_occured(dt, data):
+  try:  # we even make it into the module?
+    for case in switch(data['event']):
+      if case('enter'):
+        print "{0} entered {1} at {2}".format(tidNames[data['tid']], data['desc'], dt)
+        break
+      if case('leave'):
+        print "{0} left {1} at {2}".format(tidNames[data['tid']], data['desc'], dt)
+        break
+      if case():  # default
+        print "I'm not sure what transition occured!"
+  except:
+    print "transition_occured called but failed"
+
+      
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
@@ -35,6 +52,9 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+  logging.info('Topic: %s', str(msg.topic))
+  logging.info('Payload: %s', str(msg.payload))
+
   topic = msg.topic
   data = json.loads(str(msg.payload))
 
@@ -50,20 +70,11 @@ def on_message(client, userdata, msg):
         print "Topic {0} is in mortal peril!".format(topic)
         break
       if case('location'):
-        print "TID = {0} was at {1}, {2} on {3}".format(
-          data['tid'], data['lat'], data['lon'], dt)
+        print "{0} was at {1}, {2} on {3}".format(
+          tidNames[data['tid']], data['lat'], data['lon'], dt)
         break
       if case('transition'):
-        for case in switch(data['event']):
-          if case('enter'):
-            print "TID = {0} entered {1} on {2}".format(data['tid'], data['desc'], dt)
-            break
-          if case('leave'):
-            print "TID = {0} left {1} on {2}".format(data['tid'], data['desc'], dt)
-            break
-          if case(): # default
-            print "Not sure what happened in this transition"
-            break
+        transition_occured(dt, data)
         break
       if case(): # default
         print "I don't know what the payload is!"
@@ -73,16 +84,53 @@ def on_message(client, userdata, msg):
       + msg.topic + "' with QoS " + str(msg.qos))
 
 
-client = mqtt.Client()
-client.username_pw_set("hass","hass3665")
-client.tls_set("/etc/ssl/certs/ca-certificates.crt")
-client.on_connect = on_connect
-client.on_message = on_message
+# The callback for when the client wants to capture log information
+def on_log(client, userdata, level, buf):
+  logging.debug("on_log: %s", buf)
 
-client.connect("m13.cloudmqtt.com", 28497, 60)
 
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-client.loop_forever()
+def main(argv):
+  try:
+    opts, args = getopt.getopt(argv, "h", ["log="])
+  except getopt.GetoptError:
+    print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL]'
+    sys.exit(2)
+  for opt, arg in opts:
+    if opt == '-h':
+      print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL]'
+      sys.exit()
+    elif opt == ("--log"):
+      '''
+        assuming loglevel is bound to the string value obtained from the
+        command line argument. Convert to upper case to allow the user to
+        specify --log=DEBUG or --log=debug
+      '''
+      loglevel = 'INFO'   # default level of logging
+      loglevel = arg
+      numeric_level = getattr(logging, loglevel.upper(), None)
+      if not isinstance(numeric_level, int):
+          raise ValueError('Invalid log level: %s' % loglevel)
+      logging.basicConfig(level=numeric_level, filename='WeasleyClock.log', 
+        format='[%(levelname)s: %(asctime)s]: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
+  tidNames = {'bc':'Bruce', 'tc':'Tracey', 'cc':'Collin', 'ba':'Andrew', 'ac':'Allyson', 'ec':'Ethan'}
+
+  # setup mqtt client options then connect
+  client = mqtt.Client()
+  client.username_pw_set("hass","hass3665")
+  client.on_connect = on_connect
+  client.on_message = on_message
+  client.on_log = on_log
+  #client.tls_set("/etc/ssl/certs/ca-certificates.crt")
+  client.connect("m13.cloudmqtt.com", 18497, 60)
+
+  '''
+    Blocking call that processes network traffic, dispatches callbacks and
+    handles reconnecting.
+    Other loop*() functions are available that give a threaded interface and a
+    manual interface.
+  '''
+  client.loop_forever()
+
+if __name__ == "__main__":
+  main(sys.argv[1:])
