@@ -90,14 +90,17 @@ def on_log(client, userdata, level, buf):
 
 
 def main(argv):
+  logLevel = 'INFO'   # default level of logging
+  tlsOption = 'OFF'   # default is TLS Off
+
   try:
-    opts, args = getopt.getopt(argv, "h", ["log="])
+    opts, args = getopt.getopt(argv, "h", ["log=", "tls="])
   except getopt.GetoptError:
-    print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL]'
+    print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL] --tls=[ON, OFF]'
     sys.exit(2)
   for opt, arg in opts:
     if opt == '-h':
-      print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL]'
+      print 'WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL] --tls=[ON, OFF]'
       sys.exit()
     elif opt == ("--log"):
       '''
@@ -105,13 +108,14 @@ def main(argv):
         command line argument. Convert to upper case to allow the user to
         specify --log=DEBUG or --log=debug
       '''
-      loglevel = 'INFO'   # default level of logging
-      loglevel = arg
-      numeric_level = getattr(logging, loglevel.upper(), None)
+      logLevel = arg
+      numeric_level = getattr(logging, logLevel.upper(), None)
       if not isinstance(numeric_level, int):
-          raise ValueError('Invalid log level: %s' % loglevel)
+          raise ValueError('Invalid log level: %s' % logLevel)
       logging.basicConfig(level=numeric_level, filename='WeasleyClock.log', 
         format='[%(levelname)s: %(asctime)s]: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+    elif opt == ("--tls"):
+      tlsOption = arg
 
   tidNames = {'bc':'Bruce', 'tc':'Tracey', 'cc':'Collin', 'ba':'Andrew', 'ac':'Allyson', 'ec':'Ethan'}
 
@@ -121,8 +125,12 @@ def main(argv):
   client.on_connect = on_connect
   client.on_message = on_message
   client.on_log = on_log
-  #client.tls_set("/etc/ssl/certs/ca-certificates.crt")
-  client.connect("m13.cloudmqtt.com", 18497, 60)
+
+  if tlsOption.upper() == 'ON':
+    client.tls_set("/etc/ssl/certs/ca-certificates.crt")
+    client.connect("m13.cloudmqtt.com", 28497, 60)
+  elif tlsOption.upper() == 'OFF':
+    client.connect("m13.cloudmqtt.com", 18497, 60)
 
   '''
     Blocking call that processes network traffic, dispatches callbacks and
