@@ -1,7 +1,5 @@
 import paho.mqtt.client as mqtt
-import json
-import datetime
-import logging, sys, getopt
+import json, datetime, logging, sys, getopt
 
 
 # provide switch/case type construct for python
@@ -58,8 +56,8 @@ def on_message(client, userdata, msg):
   topic = msg.topic
   data = json.loads(str(msg.payload))
 
-  if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card',
-    'waypoint', 'waypoints', 'encrypted'):
+  if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card', \
+        'waypoint', 'waypoints', 'encrypted'):
     print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
     return
 
@@ -70,8 +68,8 @@ def on_message(client, userdata, msg):
         print "Topic {0} is in mortal peril!".format(topic)
         break
       if case('location'):
-        print "{0} was at {1}, {2} on {3}".format(
-          tidNames[data['tid']], data['lat'], data['lon'], dt)
+        print "{0} was at {1}, {2} on {3}".format(tidNames[data['tid']], \
+            data['lat'], data['lon'], dt)
         break
       if case('transition'):
         transition_occured(dt, data)
@@ -80,7 +78,7 @@ def on_message(client, userdata, msg):
         print "I don't know what the payload is!"
   except:
     print "Cannot decode data on topic {0}".format(topic)
-    print("Received message '" + str(msg.payload) + "' on topic '" 
+    print("Received message '" + str(msg.payload) + "' on topic '" \
       + msg.topic + "' with QoS " + str(msg.qos))
 
 
@@ -117,8 +115,6 @@ def main(argv):
     elif opt == ("--tls"):
       tlsOption = arg
 
-  tidNames = {'bc':'Bruce', 'tc':'Tracey', 'cc':'Collin', 'ba':'Andrew', 'ac':'Allyson', 'ec':'Ethan'}
-
   # setup mqtt client options then connect
   client = mqtt.Client()
   client.username_pw_set("hass","hass3665")
@@ -141,4 +137,6 @@ def main(argv):
   client.loop_forever()
 
 if __name__ == "__main__":
+  tidNames = {'bc':'Bruce', 'tc':'Tracey', 'cc':'Collin', \
+    'ba':'Andrew', 'ac':'Allyson', 'ec':'Ethan'}
   main(sys.argv[1:])
