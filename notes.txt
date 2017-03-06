@@ -4,3 +4,14 @@ Examples:
 http://www.magicclock.de/
   clock with 4 servos - https://youtu.be/yYNx0Pr5jPo
 
+locations to track:
+home
+work
+school
+traveling
+lost
+mortal peril
+church
+gym
+tbd
+
