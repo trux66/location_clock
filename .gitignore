@@ -2,6 +2,9 @@
 *.otrc
 *.otrw
 
+# Credentials
+.mqttcredentials
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
