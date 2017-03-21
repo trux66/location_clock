@@ -9,3 +9,14 @@ OwnTracks:
 
 Dispatcher:
 	see information in "Dive into Python" on GETATTR
+=======
+locations to track:
+home
+work
+school
+traveling
+lost
+mortal peril
+church
+gym
+tbd
