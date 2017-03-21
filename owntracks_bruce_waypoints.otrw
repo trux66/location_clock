@@ -1,66 +1,62 @@
-#on topic 'owntracks/bruce/bc/waypoint'
+# on topic 'owntracks/bruce/bc/waypoint' 
 {
-  "_type": "cmd",
-  "action": "setWaypoints",
-  "payload": {
-    "waypoints": [
-      {
-        "desc": "-Basement@Home:8ea87d32-7eb8-5626-84e0-88659990eb1d:0001:0003",
-        "rad": 0,
-        "lat": 39.460752899999996,
-        "lon": -84.15811699999999,
-        "tst": 1481857141,
-        "_type": "waypoint"
-      }
-    ],
-    "_type": "waypoints"
-  }
+    "_type": "cmd",
+    "action": "setWaypoints",
+    "payload": {
+        "waypoints": [{
+            "desc": "-Basement@Home:8ea87d32-7eb8-5626-84e0-88659990eb1d:0001:0003",
+            "rad": 0,
+            "lat": 39.460752899999996,
+            "lon": -84.15811699999999,
+            "tst": 1481857141,
+            "_type": "waypoint"
+        }],
+        "_type": "waypoints"
+    }
 }
 
 
 {
-"_type":"waypoints",
-"waypoints" : [
-		{
-			"_type":"waypoint",
-			"desc":"Home",
-			"lat":39.460752899999996,
-			"lon":-84.15811699999999,
-			"rad":2000,
-			"tst":1481857141
-		},
-		{
-			"_type":"waypoint",
-			"desc":"Gift Shop",
-			"lat":39.4337465,
-			"lon":-84.2085547,
-			"rad":50,
-			"tst":1481857341
-		},
-		{
-			"_type":"waypoint",
-			"desc":"Library",
-			"lat":39.43315989999999,
-			"lon":-84.2088857,
-			"rad":50,
-			"tst":1481857420
-		},
-		{
-			"_type":"waypoint",
-			"desc":"Columbus Temple",
-			"lat":39.99724249999997,
-			"lon":-83.11604296875001,
-			"rad":100,
-			"tst":1482000236
-		},
-		{
-			"_type":"waypoint",
-			"desc":"Middletown Building",
-			"lat":39.510059000000005,
-			"lon":-84.33744899999999,
-			"rad":1000,
-			"tst":1482445188
-		}
-	]
+    "_type": "waypoints",
+    "waypoints": [{
+            "_type": "waypoint",
+            "desc": "Home",
+            "lat": 39.460752899999996,
+            "lon": -84.15811699999999,
+            "rad": 2000,
+            "tst": 1481857141
+        },
+        {
+            "_type": "waypoint",
+            "desc": "Gift Shop",
+            "lat": 39.4337465,
+            "lon": -84.2085547,
+            "rad": 50,
+            "tst": 1481857341
+        },
+        {
+            "_type": "waypoint",
+            "desc": "Library",
+            "lat": 39.43315989999999,
+            "lon": -84.2088857,
+            "rad": 50,
+            "tst": 1481857420
+        },
+        {
+            "_type": "waypoint",
+            "desc": "Columbus Temple",
+            "lat": 39.99724249999997,
+            "lon": -83.11604296875001,
+            "rad": 100,
+            "tst": 1482000236
+        },
+        {
+            "_type": "waypoint",
+            "desc": "Middletown Building",
+            "lat": 39.510059000000005,
+            "lon": -84.33744899999999,
+            "rad": 1000,
+            "tst": 1482445188
+        }
+    ]
 }
-
