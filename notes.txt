@@ -4,3 +4,8 @@ Examples:
 http://www.magicclock.de/
   clock with 4 servos - https://youtu.be/yYNx0Pr5jPo
 
+OwnTracks:
+	- iOS devices are returning the timestamp for LWT events as strings instead of numbers. I'll need to check for these and fix it before trying to convert the timestamp to a date.
+
+Dispatcher:
+	see information in "Dive into Python" on GETATTR
