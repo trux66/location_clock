@@ -1,20 +1,25 @@
 #!/usr/bin/env python
 
 """
-Need to create something useful here as the module docstring
+Name: WeasleyClock.py
+Description: code to filter MQTT messages for location events
+History:
+    3/21 - clean up formating with pylint; using pep8 style
 """
 
-import json
 import datetime
+import getopt
+import json
 import logging
 import sys
-import getopt
+
 import paho.mqtt.client as mqtt
 
 
 # provide switch/case type construct for python
 class Switch(object):       # pylint: disable=too-few-public-methods
     """doc string"""
+
     def __init__(self, value):
         """init for class"""
         self.value = value
@@ -55,7 +60,7 @@ def transition_occured(time_stamp, data):
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):    # pylint: disable=C0103, W0613
     """On Connect callback routine"""
-    print "Connected with result code "+str(rc)
+    print "Connected with result code " + str(rc)
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("owntracks/#")
@@ -71,7 +76,7 @@ def on_message(client, userdata, msg):  # pylint: disable=C0103, W0613
     data = json.loads(str(msg.payload))
 
     if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card',
-            'waypoint', 'waypoints', 'encrypted'):
+                         'waypoint', 'waypoints', 'encrypted'):
         print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
         return
 
