@@ -46,10 +46,12 @@ def transition_occured(time_stamp, data):
     try:
         for case in Switch(data['event']):
             if case('enter'):
-                print "{0} entered {1} at {2}".format(TID_NAMES[data['tid']], data['desc'], time_stamp)
+                print "{0} entered {1} at {2}".format(TID_NAMES[data['tid']],
+                                                      data['desc'], time_stamp)
                 break
             if case('leave'):
-                print "{0} left {1} at {2}".format(TID_NAMES[data['tid']], data['desc'], time_stamp)
+                print "{0} left {1} at {2}".format(TID_NAMES[data['tid']],
+                                                   data['desc'], time_stamp)
                 break
             if case():  # default
                 print "I'm not sure what transition occured!"
@@ -77,7 +79,8 @@ def on_message(client, userdata, msg):  # pylint: disable=C0103, W0613
 
     if data['_type'] in ('beacon', 'cmd', 'steps', 'configuration', 'card',
                          'waypoint', 'waypoints', 'encrypted'):
-        print "Payload is of _type {0}, but I don't care about that type.".format(data['_type'])
+        print "Payload is of _type {0}, but I don't care about \
+                that type.".format(data['_type'])
         return
 
     try:    # see if we can do something based on the _type of message received
@@ -88,7 +91,8 @@ def on_message(client, userdata, msg):  # pylint: disable=C0103, W0613
                 print "Topic {0} is in mortal peril!".format(topic)
                 break
             if case('location'):
-                print "{0} was at {1}, {2} on {3}".format(TID_NAMES[data['tid']], data['lat'], data['lon'], time_stamp)
+                print "{0} was at {1}, {2} on {3}".format(TID_NAMES[
+                    data['tid']], data['lat'], data['lon'], time_stamp)
                 break
             if case('transition'):
                 transition_occured(time_stamp, data)
@@ -98,7 +102,8 @@ def on_message(client, userdata, msg):  # pylint: disable=C0103, W0613
     finally:    # no specific exception handler so just log and keep going
         logging.info('Failed to Decode data: %s', str(msg.payload))
         print "Failed to decode data on topic {0}".format(topic)
-        print "Received message '" + str(msg.payload) + "' on topic '" + msg.topic + "' with QoS " + str(msg.qos)
+        print "Received message '" + str(msg.payload) + "' on topic '" \
+            + msg.topic + "' with QoS " + str(msg.qos)
 
 
 # The callback for when the client wants to capture log information
@@ -116,11 +121,13 @@ def main(argv):
         # opts, args = getopt.getopt(argv, "h", ["log=", "tls="])[0]
         opts = getopt.getopt(argv, "h", ["log=", "tls="])[0]
     except getopt.GetoptError:
-        print 'Usage: WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL] --tls=[ON, OFF]'
+        print 'Usage: WeasleyClock.py --log=[DEBUG, INFO, WARNING, \
+                ERROR, CRITICAL] --tls=[ON, OFF]'
         sys.exit(1)
     for opt, arg in opts:
         if opt == '-h':
-            print 'Usage: WeasleyClock.py --log=[DEBUG, INFO, WARNING, ERROR, CRITICAL] --tls=[ON, OFF]'
+            print 'Usage: WeasleyClock.py --log=[DEBUG, INFO, WARNING, \
+                    ERROR, CRITICAL] --tls=[ON, OFF]'
             sys.exit(0)
         elif opt == ("--log"):
             '''
@@ -132,15 +139,25 @@ def main(argv):
             numeric_level = getattr(logging, log_level.upper(), None)
             if not isinstance(numeric_level, int):
                 raise ValueError('Invalid log level: %s' % log_level)
-            logging.basicConfig(level=numeric_level, filename='WeasleyClock.log',
-                                format='[%(levelname)s: %(asctime)s]: %(message)s',
+            logging.basicConfig(level=numeric_level,
+                                filename='WeasleyClock.log',
+                                format='[%(levelname)s: %(asctime)s]: \
+                                        %(message)s',
                                 datefmt='%m/%d/%Y %I:%M:%S %p')
         elif opt == ("--tls"):
             tls_option = arg
 
+    # load the mqtt login credentials from a file
+    try:
+        with open('.mqttcredentials', 'r') as filename:
+            user, pwd = filename.readline().strip().split(':')
+    except IOError:
+        print 'Problem loading MQTT Credentials file (.mqttcredentials)'
+        sys.exit(1)
+
     # setup mqtt client options then connect
     client = mqtt.Client()
-    client.username_pw_set("hass", "hass3665")
+    client.username_pw_set(user, pwd)
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_log = on_log
